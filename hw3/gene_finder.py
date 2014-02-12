@@ -20,18 +20,29 @@ def coding_strand_to_AA(dna):
     """ Computes the Protein encoded by a sequence of DNA.  This function
         does not check for start and stop codons (it assumes that the input
         DNA sequence represents an protein coding region).
-        
         dna: a DNA sequence represented as a string
         returns: a string containing the sequence of amino acids encoded by the
                  the input DNA fragment
+        Any imcomplete sets of 3 at the end will be ignored.
     """
-    
-    # YOUR IMPLEMENTATION HERE
+    #>>> coding_strand_to_AA("ATGCGA")
+    #'MR'
+    aminoOutput='' #declare the output string.
+    if(len(dna)%3!=0):
+        print('There is an incomplete set of 3 base pairs.  It will be ignored.')
+    for l in range(len(dna)/3):
+        codon=dna[3*l:3*l+3] #In this for loop, examines the string 3 items at a time.
+        for k in range(len(codons)):
+            if codon in codons[k]:
+                aminoOutput=aminoOutput+aa[k]
+    return(aminoOutput)
+            
 
-def coding_strand_to_AA_unit_tests():
+def coding_strand_to_AA_unit_tests(): #not done
     """ Unit tests for the coding_strand_to_AA function """
-        
-    # YOUR IMPLEMENTATION HERE
+    print('input: ACGTAG, expected output: T|, actual output:')+str(coding_strand_to_AA('ACGTAG'))
+    print('input: TCAGCAK, expected output: SA, actual output:')+str(coding_strand_to_AA('TCAGCA'))
+    
 
 def get_reverse_complement(dna):
     """ Computes the reverse complementary sequence of DNA for the specfied DNA
@@ -40,29 +51,47 @@ def get_reverse_complement(dna):
         dna: a DNA sequence represented as a string
         returns: the reverse complementary DNA sequence represented as a string
     """
-    
-    # YOUR IMPLEMENTATION HERE
-    
-def get_reverse_complement_unit_tests():
+    output=''
+    for i in range(len(dna)):#Creates a new string with opposite base pairs.
+        if dna[i]=='A':
+            add='T'
+        elif dna[i]=='C':
+            add='G'
+        elif dna[i]=='T':
+            add='A'
+        elif dna[i]=='G':
+            add='C'
+        output=output+add
+    output=output[::-1]#Reverse the string!
+    return output
+            
+def get_reverse_complement_unit_tests(): #not done 
     """ Unit tests for the get_complement function """
-        
-    # YOUR IMPLEMENTATION HERE    
-
+    print('input: GCATGCT, expected output:AGCATGC, actual output:')+str(get_reverse_complement('GCATGCT'))
+    print('input: TGACGTAGA, expected output:TCTACGTCA, actual output:')+str(get_reverse_complement('TGACGTAGA'))
+    
 def rest_of_ORF(dna):
     """ Takes a DNA sequence that is assumed to begin with a start codon and returns
         the sequence up to but not including the first in frame stop codon.  If there
         is no in frame stop codon, returns the whole string.
-        
         dna: a DNA sequence
         returns: the open reading frame represented as a string
     """
+    #startCodons=codons[3] #Turns out this wasn't necessary.
+    stopCodons=codons[10] #extract the 3 stop codon sequences to check later.
+    endPos=len(dna)+1 #A variable to store the position of the first stop codon intialized so that the entire string is returned if no end codon.
+    for l in range(len(dna)/3):
+        codon=dna[3*l:3*l+3] #In this for loop, examines the string 3 items at a time.
+        if codon in stopCodons:
+            endPos=l*3 #sets endPos to the position of the first character of the stop codon.
+            break #Stops the loop as soon as it finds a stop codon so that multiple reading frames can be found.
+    return dna[0:endPos]
     
-    # YOUR IMPLEMENTATION HERE
-
 def rest_of_ORF_unit_tests():
     """ Unit tests for the rest_of_ORF function """
-        
-    # YOUR IMPLEMENTATION HERE
+    print('input: GCATGCTAG, expected output:GCATGC, actual output:')+str(rest_of_ORF('GCATGCTAG'))
+    print('input: GCATGCGTAAATAG, expected output:GCATGCGTAAATAG, actual output:')+str(rest_of_ORF('GCATGCGTAATAG'))       
+    #The second unit test tests for codons of incorrect lengths.
         
 def find_all_ORFs_oneframe(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence and returns
@@ -74,9 +103,20 @@ def find_all_ORFs_oneframe(dna):
         dna: a DNA sequence
         returns: a list of non-nested ORFs
     """
-     
-    # YOUR IMPLEMENTATION HERE        
-     
+    startCodons=codons[3]
+    output_list=[]
+    while len(dna)>0:
+        codon=dna[0:3] #In this for loop, examines the string 3 items at a time.
+        if codon in startCodons:
+             dnaSet=rest_of_ORF(dna)
+             output_list.append(dnaSet)
+             dna=dna[len(dnaSet):len(dna)+1] #If a start codon is found, continue to the stop codon, 
+                                             #save what you found, then delete it from dna.
+        else:
+             dna=dna[3:len(dna)+1] #If we examine a set of 3, and that set is not a start codon, remove it.  
+                                   #This lets us ignore stuff at the front of the string that isn't in a reading frame!
+    return output_list
+    
 def find_all_ORFs_oneframe_unit_tests():
     """ Unit tests for the find_all_ORFs_oneframe function """
 
@@ -91,8 +131,12 @@ def find_all_ORFs(dna):
         dna: a DNA sequence
         returns: a list of non-nested ORFs
     """
-     
-    # YOUR IMPLEMENTATION HERE
+    dna2=dna[1:len(dna)+1] #make copies where the dna is shifted over one.
+    dna3=dna[2:len(dna)+1]
+    output1=find_all_ORFs_oneframe(dna)
+    output2=find_all_ORFs_oneframe(dna2)
+    output3=find_all_ORFs_oneframe(dna3)
+    return output1+output2+output3
 
 def find_all_ORFs_unit_tests():
     """ Unit tests for the find_all_ORFs function """
@@ -106,7 +150,9 @@ def find_all_ORFs_both_strands(dna):
         dna: a DNA sequence
         returns: a list of non-nested ORFs
     """
-     
+    forward=find_all_ORFs(dna)
+    reverse=find_all_ORFs(get_reverse_complement(dna))
+    return forward + reverse
     # YOUR IMPLEMENTATION HERE
 
 def find_all_ORFs_both_strands_unit_tests():
