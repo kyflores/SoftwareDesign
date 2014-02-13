@@ -7,6 +7,7 @@ Created on Sun Feb  2 11:24:42 2014
 
 # you may find it useful to import these variables (although you are not required to use them)
 from amino_acids import aa, codons
+import random
 
 def collapse(L):
     """ Converts a list of strings to a string by concatenating all elements of the list """
@@ -119,8 +120,8 @@ def find_all_ORFs_oneframe(dna):
     
 def find_all_ORFs_oneframe_unit_tests():
     """ Unit tests for the find_all_ORFs_oneframe function """
-
-    # YOUR IMPLEMENTATION HERE
+    print('input: ATGCGAGACTAGATGCGACAGTAG, expected output:ATGCGAGAC, ATGCGACAG, actual output:')+str(find_all_ORFs_oneframe('ATGCGAGACTAGATGCGACAGTAG'))
+    print('input: GCATGCGTAAATAG, expected output:[], actual output:')+str(find_all_ORFs_oneframe('GCATGCGTAATAG'))       
 
 def find_all_ORFs(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence in all 3
@@ -140,9 +141,8 @@ def find_all_ORFs(dna):
 
 def find_all_ORFs_unit_tests():
     """ Unit tests for the find_all_ORFs function """
-        
-    # YOUR IMPLEMENTATION HERE
-
+    print('input: ATGCATGCGAGCTAGATAG, expected output:ATGCATGCGAGC, ATGCGAGCTAGA actual output:')+str(find_all_ORFs('ATGCATGCGAGCTAGATAG'))    
+    
 def find_all_ORFs_both_strands(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence on both
         strands.
@@ -153,7 +153,6 @@ def find_all_ORFs_both_strands(dna):
     forward=find_all_ORFs(dna)
     reverse=find_all_ORFs(get_reverse_complement(dna))
     return forward + reverse
-    # YOUR IMPLEMENTATION HERE
 
 def find_all_ORFs_both_strands_unit_tests():
     """ Unit tests for the find_all_ORFs_both_strands function """
@@ -163,8 +162,15 @@ def find_all_ORFs_both_strands_unit_tests():
 def longest_ORF(dna):
     """ Finds the longest ORF on both strands of the specified DNA and returns it
         as a string"""
-
-    # YOUR IMPLEMENTATION HERE
+    L=find_all_ORFs_both_strands(dna)
+    comparisonValue=0; #A variable to store the length of the longest ORF found so far.
+    output=''
+    for i in range(len(L)):
+        if len(L[i])>comparisonValue:
+            output=L[i]
+            comparisonValue=len(L[i])
+    return output
+            
 
 def longest_ORF_unit_tests():
     """ Unit tests for the longest_ORF function """
@@ -178,8 +184,18 @@ def longest_ORF_noncoding(dna, num_trials):
         dna: a DNA sequence
         num_trials: the number of random shuffles
         returns: the maximum length longest ORF """
-
-    # YOUR IMPLEMENTATION HERE
+    comparisonValue=0
+    for i in range (num_trials):
+        dnaList=list(dna)
+        random.shuffle(dnaList)
+        dna=collapse(dnaList)
+        K=longest_ORF(dna)
+        if len(K)>comparisonValue:
+            output=K
+            comparisonValue=len(K)
+    return output
+        
+        
 
 def gene_finder(dna, threshold):
     """ Returns the amino acid sequences coded by all genes that have an ORF
