@@ -5,17 +5,9 @@ Created on Sun Feb  9 16:19:21 2014
 @author: kyle
 """
 
+#Just have been running this script to get outputs...
 from gene_finder import *
 from amino_acids import aa, codons
 
-#print(collapse(['AAA']))
-#coding_strand_to_AA_unit_tests()
-#get_reverse_complement_unit_tests()
-#rest_of_ORF_unit_tests()
-#get_reverse_complement_unit_tests()
-#find_all_ORFs_oneframe_unit_tests()
-#find_all_ORFs_unit_tests()
-#print(find_all_ORFs('ATGCATGAATGTAG'))
-#print(find_all_ORFs_both_strands('ATGCGAATGTAGCATCAAA'))
-#print(longest_ORF('ATGCGAATGTAGCATCAAA'))
-print(longest_ORF_noncoding('ATGCGAATGTAGCATCAAA',10))
+find_all_ORFs_both_strands_unit_tests()
+longest_ORF_unit_tests()

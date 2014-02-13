@@ -2,7 +2,7 @@
 """
 Created on Sun Feb  2 11:24:42 2014
 
-@author: YOUR NAME HERE
+@author: kyle Flores
 """
 
 # you may find it useful to import these variables (although you are not required to use them)
@@ -29,8 +29,8 @@ def coding_strand_to_AA(dna):
     #>>> coding_strand_to_AA("ATGCGA")
     #'MR'
     aminoOutput='' #declare the output string.
-    if(len(dna)%3!=0):
-        print('There is an incomplete set of 3 base pairs.  It will be ignored.')
+    #if(len(dna)%3!=0):
+        #print('There is an incomplete set of 3 base pairs.  It will be ignored.')
     for l in range(len(dna)/3):
         codon=dna[3*l:3*l+3] #In this for loop, examines the string 3 items at a time.
         for k in range(len(codons)):
@@ -156,9 +156,8 @@ def find_all_ORFs_both_strands(dna):
 
 def find_all_ORFs_both_strands_unit_tests():
     """ Unit tests for the find_all_ORFs_both_strands function """
-
-    # YOUR IMPLEMENTATION HERE
-
+    print('input: ATGCATGCGAGCTAGATAG, expected output: ATGCATGCGAGC, ATGCGAGCTAGA, ATGCAT  actual output:')+str(find_all_ORFs_both_strands('ATGCATGCGAGCTAGATAG'))
+    
 def longest_ORF(dna):
     """ Finds the longest ORF on both strands of the specified DNA and returns it
         as a string"""
@@ -174,8 +173,9 @@ def longest_ORF(dna):
 
 def longest_ORF_unit_tests():
     """ Unit tests for the longest_ORF function """
-
-    # YOUR IMPLEMENTATION HERE
+    print('input: ATGCATGCGAGCTAGATAG, expected output: ATGCATGCGAGC actual output:')+str(longest_ORF('ATGCATGCGAGCTAGATAG'))
+    #If it finds two ORFs with the same length, it will return the first one.  I decided that this is okay, given how longest_ORF is used in other functions
+    
 
 def longest_ORF_noncoding(dna, num_trials):
     """ Computes the maximum length of the longest ORF over num_trials shuffles
@@ -193,7 +193,7 @@ def longest_ORF_noncoding(dna, num_trials):
         if len(K)>comparisonValue:
             output=K
             comparisonValue=len(K)
-    return output
+    return len(output)
         
         
 
@@ -207,5 +207,9 @@ def gene_finder(dna, threshold):
         returns: a list of all amino acid sequences whose ORFs meet the minimum
                  length specified.
     """
-
-    # YOUR IMPLEMENTATION HERE
+    L=find_all_ORFs_both_strands(dna) #That's gonna be a list of strings.  I think.
+    output=[]
+    for i in range(len(L)):
+        if len(L[i])>threshold:
+            output.append(coding_strand_to_AA(L[i]))
+    return output
