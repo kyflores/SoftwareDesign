@@ -13,11 +13,11 @@ def get_primes(n):
     for i in range(1,n+1):
         for j in range(1,i):
             if i % j == 0:
-                isPrime = False
+               isPrime = False
         if isPrime:
             return_val.append(i)
     return return_val
 
 
-if __name__ == '__main__':
-    print get_primes(7)
+
+print get_primes(7)
